@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+    <div th:fragment="header" class="page-header clearfix">
+        <h1>Gestore di Anagrafiche</h1>
+
+        <form th:action="@{/logout}" method="post" class="action-form">
+            <input type="submit" value="Logout" class="btn btn-default"/>
+        </form>
+    </div>
+</body>
+</html>

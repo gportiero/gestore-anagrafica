@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Importa Anagrafiche</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<div layout:fragment="content">
+		<form th:action="@{/registries/import}" method="post" enctype="multipart/form-data">
+			<div class="form-group">
+				<label> Seleziona file: <input type="file" name="file" class="form-control" />
+				</label>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Importa" class="btn btn-primary" />
+			</div>
+		</form>
+		<nav>
+	        <a class="btn btn-default" th:href="@{/}">Home</a>
+	    </nav>
+	</div>
+</body>
+</html>

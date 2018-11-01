@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">Gestore di Anagrafiche!</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+    	rel="stylesheet" 
+    	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+    	crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="container">
+    <div th:replace="fragments/header :: header"></div>
+    <div id="success" class="alert alert-success" style="display: none;">
+        Import terminato!
+    </div>
+    <div id="error" class="alert alert-danger" style="display: none;">
+        Si è verificato un errore durante l'importazione!
+    </div>
+    <div layout:fragment="content">
+    </div>
+</div>
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
