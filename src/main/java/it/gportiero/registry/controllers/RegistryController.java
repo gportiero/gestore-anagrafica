@@ -1,6 +1,12 @@
 package it.gportiero.registry.controllers;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +24,16 @@ import it.gportiero.registry.services.RegistryService;
 @RequestMapping("/registries")
 public class RegistryController {
 
-	@Autowired
-	private RegistryService registryService;
+	private final static Logger LOG = LoggerFactory.getLogger(RegistryController.class);
 	
 	@Autowired
+	private RegistryService registryService;
+
+	@Autowired
 	private ImportService importService;
+	
+	@Autowired
+	private SimpMessagingTemplate brokerMessagingTemplate;
 
 	@GetMapping
 	public String list(Model model) {
@@ -50,7 +61,17 @@ public class RegistryController {
 	@PostMapping("/import")
 	public String importCSVFile(@RequestParam("file") MultipartFile file) {
 
-		importService.importCSV(file);
+		File tmpFile = new File(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator")
+				+ file.getOriginalFilename());
+		try {
+			file.transferTo(tmpFile);
+			
+			importService.importCSV(tmpFile);
+		} catch (IllegalStateException | IOException e) {
+			LOG.error("an error occurs during execute method 'importCSVFile': " + e.getMessage(), e);
+			
+			brokerMessagingTemplate.convertAndSend("/topics/import/status", false);
+		}
 
 		return "redirect:/";
 	}

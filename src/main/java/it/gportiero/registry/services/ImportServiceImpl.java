@@ -1,8 +1,8 @@
 package it.gportiero.registry.services;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -32,7 +31,7 @@ public class ImportServiceImpl implements ImportService {
 	private SimpMessagingTemplate brokerMessagingTemplate;
 
 	@Async
-	public void importCSV(MultipartFile multipartFile) {
+	public void importCSV(File file) {
 		// simulate delay
 		try {
 			Thread.sleep(2000L);
@@ -41,19 +40,13 @@ public class ImportServiceImpl implements ImportService {
 		}
 
 		Reader reader = null;
-		File file = null;
 		try {
-			file = getFile(multipartFile);
 			reader = new FileReader(file);
-		} catch (IOException e) {
+		} catch (FileNotFoundException e) {
 			LOG.error("an error occurs during execute method 'importCSV': " + e.getMessage(), e);
 
 			brokerMessagingTemplate.convertAndSend("/topics/import/status", false);
 			return;
-		} finally {
-			if (file != null && file.exists()) {
-				file.delete();
-			}
 		}
 
 		@SuppressWarnings("unchecked")
@@ -65,12 +58,5 @@ public class ImportServiceImpl implements ImportService {
 		registryRepository.save(registries);
 
 		brokerMessagingTemplate.convertAndSend("/topics/import/status", true);
-	}
-
-	private File getFile(MultipartFile multipartFile) throws IOException {
-		File convFile = new File(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator")
-				+ multipartFile.getOriginalFilename());
-		multipartFile.transferTo(convFile);
-		return convFile;
 	}
 }
